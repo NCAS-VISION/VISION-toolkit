@@ -32,43 +32,43 @@ installed locally. Since python packages are updated all the time, any new pytho
 installation might have some issues with dependencies and issues will need to be ironed
 out. To install a new python environment follow the instructions below:
 
-a) from the home directory, download `miniconda` by typing these lines in your terminal:
+a) From the home directory, download `miniconda` by typing these lines in your terminal:
 
-```bash
-wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
-```
+   ```bash
+   wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
+   ```
 
 b) Install `miniconda`:
 
-```bash
-bash Miniconda3-latest-Linux-x86_64.sh -b
-PATH=~/miniconda3/bin:$PATH conda install mamba -n base -c conda-forge -y
-PATH=~/miniconda3/bin:$PATH mamba install cf-python cf-plot udunits2 mpich esmpy
-iris mo_pack ipython -c ncas -c conda-forge -y
-PATH=~/miniconda3/bin:$PATH conda install -c conda-forge cis
-```
+   ```bash
+   bash Miniconda3-latest-Linux-x86_64.sh -b
+   PATH=~/miniconda3/bin:$PATH conda install mamba -n base -c conda-forge -y
+   PATH=~/miniconda3/bin:$PATH mamba install cf-python cf-plot udunits2 mpich esmpy
+   iris mo_pack ipython -c ncas -c conda-forge -y
+   PATH=~/miniconda3/bin:$PATH conda install -c conda-forge cis
+   ```
 
 c) Often, one of the libraries is not compiled properly, fix this by following instructions
-below
+   below:
 
-```bash
-cd ~/miniconda3/lib/pythonX.X/site-packages/cf/umread_lib/c-lib
-make
-```
+    ```bash
+    cd ~/miniconda3/lib/pythonX.X/site-packages/cf/umread_lib/c-lib
+    make
+    ```
 
 d) Modify your `.bash_profile` (or `.bashrc` etc.) by adding the two lines below to define the
-python path:
+   python path:
 
-```bash
-export PATH=~/miniconda3/bin:$PATH
-export UDUNITS2_XML_PATH=~/miniconda3/share/udunits/udunits2.xml
-```
+   ```bash
+   export PATH=~/miniconda3/bin:$PATH
+   export UDUNITS2_XML_PATH=~/miniconda3/share/udunits/udunits2.xml
+   ```
 
 e) Load the conda environment:
 
-```bash
-conda activate ~/miniconda3
-```
+   ```bash
+   conda activate ~/miniconda3
+   ```
 
 
 #### 1. B) Python environment (on Monsoon)
@@ -82,12 +82,12 @@ the current python installation (see instruction below).
 a) Make a copy of `/home/d05/marus/miniconda3` and place it in your home directory
 
 b) Modify your `.bash_profile` (or `.bashrc` etc.) by adding the two lines below to define the
-python path:
+   python path:
 
-```bash
-export PATH=~/miniconda3/bin:$PATH
-export UDUNITS2_XML_PATH=~/miniconda3/share/udunits/udunits2.xml
-```
+   ```bash
+   export PATH=~/miniconda3/bin:$PATH
+   export UDUNITS2_XML_PATH=~/miniconda3/share/udunits/udunits2.xml
+   ```
 
 
 #### 2. Produce flight track input files in the appropriate netcdf format
@@ -131,10 +131,8 @@ a) `app/fcm_make_pp/rose-app.conf` (this change is necessary to archive the
 
 b) a new directory is added, `app/flight_track_sim`. This contains
    `rose_app.conf` and `bin/flight_simulator.py`. Please use the latest versions
-   of the above, which is provided with this document.
-
-   `rose_app.conf` contains input variables and a command line argument to invoke
-   `flight_simulator.py`.
+   of the above, which is provided with this document. `rose_app.conf` contains
+   input variables and a command line argument to invoke `flight_simulator.py`.
 
 c) `site/monsoon.rc` or `site/archer2.rc` (these changes are to define resources
    for the `flight_track` code)
@@ -157,37 +155,27 @@ When running within a UM suite, the input variables and command line arguments c
 accessed/modified through `app/flight_track_sim/rose_app.conf` and/or through
 the ‘flight_track_sim’ menu in the rosie job gui.
 
-
-```
-ARGUMENT DESCRIPTION
--i --inputdir Directory_in Directory_in is the full path to the directory containing hourly pp files
--t --trackdir Directory_ft Directory_ft is the full path to the directory containing flight track files
--d --cycle_date YearMonth YearMonth is a six digit tag to identify the start time of the analysis
--n --n_months N N is the number of months to process, including YearMonth (optional; default 1)
--r --runid UM_jobid UM_jobid is the unique identifier associated to a UM integration
--p --ppstream Single_char Single_char is a single character identifying the hourly data ppstream as defined in
-Rose, e.g. k
--m --method Interpolation Interpolation is “lin”/“nn” for linear or nearest neighbour interpolation (optional;
-default lin)
--v --vertical_coord choose coordinate for vertical interpolation: 'air_pressure' or 'altitude'; (optional;
-default=altitude)
--e --extra_file Filename (including full path) of model orography file'; (optional, only required if
-vertical_coord=altitude; default=Directory_ft/orography.pp)
--c --climatology True/False True produces a multi-year climatology for each flight (optional; default False)
--o --outdir Directory_out Directory_out is the location to write output NetCDF files (optional). If batch is
-selected, output files are always written to Directory_in and additionally copied to
-Directory_out if present. If postprocessing is selected, output files are written to the
-current directory (./) or to Directory_out if present)
-Batch Indicates the python script is running within the UM run-time workflow
--a --archive_hourly True to archive hourly files instead of deleting them (optional; default True)
-Postprocessing Indicates the python script is running outside the UM run-time workflow
--s --select_stash Code Code is a list of space separated stashcodes (optional; default = process all)
-```
+| ARGUMENT                    | DESCRIPTION                                                                                                                                                                                                                                                                                                             |
+|-----------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| -i --inputdir Directory_in  | Directory_in is the full path to the directory containing hourly pp files                                                                                                                                                                                                                                               |
+| -t --trackdir Directory_f   | Directory_ft Directory_ft is the full path to the directory containing flight track files                                                                                                                                                                                                                               |
+| -d --cycle_date YearMonth   | YearMonth is a six digit tag to identify the start time of the analysis                                                                                                                                                                                                                                                 |
+| -n --n_months N             | N is the number of months to process, including YearMonth (optional; default 1)                                                                                                                                                                                                                                         |
+| -r --runid UM_jobid         | UM_jobid is the unique identifier associated to a UM integration                                                                                                                                                                                                                                                        |
+| -p --ppstream Single_char   | Single_char is a single character identifying the hourly data ppstream as defined in Rose, e.g. k                                                                                                                                                                                                                       |
+| -m --method Interpolation   | Interpolation is “lin”/“nn” for linear or nearest neighbour interpolation (optional; default lin)                                                                                                                                                                                                                       |
+| -v --vertical_coord         | choose coordinate for vertical interpolation: 'air_pressure' or 'altitude'; (optional; default=altitude)                                                                                                                                                                                                                |
+| -e --extra_file             | Filename (including full path) of model orography file'; (optional, only required if vertical_coord=altitude; default=Directory_ft/orography.pp)                                                                                                                                                                        |
+| -c --climatology True/False | True produces a multi-year climatology for each flight (optional; default False)                                                                                                                                                                                                                                        |
+| -o --outdir Directory_out   | Directory_out is the location to write output NetCDF files (optional). If batch is selected, output files are always written to Directory_in and additionally copied to Directory_out if present. If postprocessing is selected, output files are written to the current directory (./) or to Directory_out if present) |
+| Batch                       | Indicates the python script is running within the UM run-time workflow                                                                                                                                                                                                                                                  |
+| -a --archive_hourly         | True to archive hourly files instead of deleting them (optional; default True)                                                                                                                                                                                                                                          |
+| Postprocessing              | Indicates the python script is running outside the UM run-time workflow                                                                                                                                                                                                                                                 |
+| -s --select_stash Code      | Code is a list of space separated stashcodes (optional; default = process all)                                                                                                                                                                                                                                          |
 
 
-#### 5. Ensure the UM has the appropriate model output in the required format to be
-read by the interpolation code
 
+#### 5. Ensure the UM has the appropriate model output in the required format to be read by the interpolation code
 
 The interpolation code can use either 'air_pressure' or 'altitude' as the vertical coordinate. If
 this is not specified it will use altitude by default.
