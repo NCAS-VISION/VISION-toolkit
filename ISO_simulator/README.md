@@ -4,24 +4,24 @@
 ## Setup Instructions
 
 
-### How to output UM data on predetermined flight tracks using flight_simulator
+### How to output UM data on predetermined flight tracks using `flight_simulator`
 
 These instructions explain how to produce UM model output on a set of predetermined
 flight tracks to make it easier and quicker to compare model data to observations. This is
 done by interpolating gridded, hourly (or higher frequency) model data in space and time
 onto flight track coordinates.
 
-Flight_simulator can be run on existing model output (postprocessing) or it can be
+`flight_simulator` can be run on existing model output (postprocessing) or it can be
 embedded into a UM rose suite. The step by step instructions work for both cases. To run
-flight_simulator in postprocessing mode you can omit point 3 below:
+`flight_simulator` in postprocessing mode you can omit point 3 below:
 
 1. Ensure the correct python environment is available. Instructions are different on
-Monsoon, Archer2 and JASMIN (see 1A and 1B).
+   Monsoon, Archer2 and JASMIN (see 1A and 1B).
 2. Produce flight track input files in the appropriate netcdf format
-3. Modify a UM suite to include a new app which calls flight_simulator
+3. Modify a UM suite to include a new app which calls `flight_simulator`
 4. Select appropriate input options for the interpolation code
 5. Ensure the UM has the appropriate model output in the required format to be read
-by the interpolation code
+   by the interpolation code
 
 
 #### 1. A) Installing a Python environment (on JASMIN, Archer2, local clusters)
@@ -32,28 +32,43 @@ installed locally. Since python packages are updated all the time, any new pytho
 installation might have some issues with dependencies and issues will need to be ironed
 out. To install a new python environment follow the instructions below:
 
-a) from the home directory, download miniconda by typing these lines in your terminal:
-wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
+a) from the home directory, download `miniconda` by typing these lines in your terminal:
 
-b) Install miniconda:
+```bash
+wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
+```
+
+b) Install `miniconda`:
+
+```bash
 bash Miniconda3-latest-Linux-x86_64.sh -b
 PATH=~/miniconda3/bin:$PATH conda install mamba -n base -c conda-forge -y
 PATH=~/miniconda3/bin:$PATH mamba install cf-python cf-plot udunits2 mpich esmpy
 iris mo_pack ipython -c ncas -c conda-forge -y
 PATH=~/miniconda3/bin:$PATH conda install -c conda-forge cis
+```
 
 c) Often, one of the libraries is not compiled properly, fix this by following instructions
 below
+
+```bash
 cd ~/miniconda3/lib/pythonX.X/site-packages/cf/umread_lib/c-lib
 make
+```
 
-d) Modify your .bash_profile (or .bashrc etc.) by adding the two lines below to define the
+d) Modify your `.bash_profile` (or `.bashrc` etc.) by adding the two lines below to define the
 python path:
+
+```bash
 export PATH=~/miniconda3/bin:$PATH
 export UDUNITS2_XML_PATH=~/miniconda3/share/udunits/udunits2.xml
+```
 
 e) Load the conda environment:
+
+```bash
 conda activate ~/miniconda3
+```
 
 
 #### 1. B) Python environment (on Monsoon)
@@ -64,31 +79,37 @@ should be resolved once moving to Monsoon2).
 Therefore, in order to access the right python environment, you will have to make a copy of
 the current python installation (see instruction below).
 
-a) Make a copy of /home/d05/marus/miniconda3 and place it in your home directory
-b) Modify your .bash_profile (or .bashrc etc.) by adding the two lines below to define the
+a) Make a copy of `/home/d05/marus/miniconda3` and place it in your home directory
+
+b) Modify your `.bash_profile` (or `.bashrc` etc.) by adding the two lines below to define the
 python path:
+
+```bash
 export PATH=~/miniconda3/bin:$PATH
 export UDUNITS2_XML_PATH=~/miniconda3/share/udunits/udunits2.xml
+```
 
 
 #### 2. Produce flight track input files in the appropriate netcdf format
 
-Input files containing the flight track information are currently read in using cis; this requires
+Input files containing the flight track information are currently read in using `cis`; this requires
 the file to be in a CF-compliant, NetCDF format.
 
 The filename is used to extract information on the date for which the data is valid.
 Therefore files must comply to the following requirements:
 
 * Data must be stored in daily files
-* The date needs to be added to the filename in the form YYYYMMDD
+* The date needs to be added to the filename in the form `YYYYMMDD`
 * The date cannot be at the beginning of the filename and needs to be preceded by an
-underscore ‘_’: for example flight_data20010101.nc (will work but can occasionally
-crash); flight_data_20010101.nc (OK)
+  underscore `_`: for example `flight_data20010101.nc` (will work but can occasionally
+  crash); `flight_data_20010101.nc` (OK)
 * There should be no digits in the filename before the date (you can add digits after):
-for example CVAO_O3_20070101.nc (not OK); CVAO_20070101_O3.nc (OK)
+  for example `CVAO_O3_20070101.nc` (not OK); `CVAO_20070101_O3.nc` (OK)
 
 The following variables defining time and location are required: ‘time’, ‘latitude’, ‘longitude’
-‘air_pressure’ and/or ‘altitude’ and the variable names must be as specified (standard cfcompliant names). One additional/optional string variable can be included (name must be
+‘air_pressure’ and/or ‘altitude’ and the variable names must be as specified (standard cf
+compliant names).
+One additional/optional string variable can be included (name must be
 ‘region’, ‘tag’ or ‘campaign’); this is used in order to identify data from specific regions,
 datasets or campaigns, so that when analysing model data on flight track, we can efficiently
 select specific data using this string variable as a mask. The flight input file can also contain
@@ -101,42 +122,44 @@ them in the files for comparison with model data after interpolation.
 
 For a list of changes required to embed the interpolation code into the UM at runtime, you
 can compare the following suites that show before/after embedding the simulator code:
-u-cn535 and u-cn586
+`u-cn535` and `u-cn586`
 
 Specifically, check relevant differences in:
 
-a) app/fcm_make_pp/rose-app.conf (this change is necessary to archive the
-resulting NetCDF files)
+a) `app/fcm_make_pp/rose-app.conf` (this change is necessary to archive the
+   resulting NetCDF files)
 
-b) a new directory is added, app/flight_track_sim. This contains
-rose_app.conf and bin/flight_simulator.py. Please use the latest versions
-of the above, which is provided with this document.
-rose_app.conf contains input variables and a command line argument to invoke
-flight_simulator.py.
+b) a new directory is added, `app/flight_track_sim`. This contains
+   `rose_app.conf` and `bin/flight_simulator.py`. Please use the latest versions
+   of the above, which is provided with this document.
 
-c) site/monsoon.rc or site/archer2.rc (these changes are to define resources
-for the flight_track code)
+   `rose_app.conf` contains input variables and a command line argument to invoke
+   `flight_simulator.py`.
 
-d) suite.rc (these changes define the new UM task and point to the python libraries)
+c) `site/monsoon.rc` or `site/archer2.rc` (these changes are to define resources
+   for the `flight_track` code)
+
+d) `suite.rc` (these changes define the new UM task and point to the python libraries)
 
 
 #### 4. Select appropriate input options for the interpolation code
 
-A list of input variables required to run flight_simulator.py, their description and
+A list of input variables required to run `flight_simulator.py`, their description and
 usage is shown in the table below. A subparser argument, ‘jobtype’, is used to indicate
 whether the code is running within the UM-UKCA run-time workflow (if ‘batch’ is selected)
 or as a standalone postprocessing tool, e.g. on existing model data, (if ‘postprocessing’ is
 selected). The postprocessing mode is useful to test the code and observational input files
 before running within a UM job. These subparser arguments also unlock specific conditional
-arguments: --archive_hourly can be used only if ‘batch’ is selected and --select_stash can
+arguments: `--archive_hourly` can be used only if ‘batch’ is selected and `--select_stash` can
 only be used if ‘postprocessing’ is selected.
 
 When running within a UM suite, the input variables and command line arguments can be
-accessed/modified through app/flight_track_sim/rose_app.conf and/or through
+accessed/modified through `app/flight_track_sim/rose_app.conf` and/or through
 the ‘flight_track_sim’ menu in the rosie job gui.
 
-ARGUMENT DESCRIPTION
+
 ```
+ARGUMENT DESCRIPTION
 -i --inputdir Directory_in Directory_in is the full path to the directory containing hourly pp files
 -t --trackdir Directory_ft Directory_ft is the full path to the directory containing flight track files
 -d --cycle_date YearMonth YearMonth is a six digit tag to identify the start time of the analysis
@@ -166,7 +189,7 @@ Postprocessing Indicates the python script is running outside the UM run-time wo
 read by the interpolation code
 
 
-The interpolation code can use either air_pressure or altitude as the vertical coordinate. If
+The interpolation code can use either 'air_pressure' or 'altitude' as the vertical coordinate. If
 this is not specified it will use altitude by default.
 
 ##### For air_pressure interpolation
@@ -174,11 +197,13 @@ this is not specified it will use altitude by default.
 Required model variables for comparison with flight data need to be output on selected
 pressure levels. You can specify the pressure levels required depending on the aircraft data
 used and which areas in the atmosphere it samples the most.
+
 Since the UM has a hybrid sigma-height vertical coordinate system, we also need to output
 the Heaviside function on pressure levels to account for model missing data where a
 pressure level near the surface falls below the orography for that gridbox. The Heaviside
 functions associated to the variables of interest (the UM has different Heaviside functions
-for different groups of variables) should be output in the same file and at the same timeresolution as the variables we want to interpolate.
+for different groups of variables) should be output in the same file and at the same
+time resolution as the variables we want to interpolate.
 
 ##### For altitude interpolation
 
@@ -187,13 +212,13 @@ levels). A subset of these levels can be defined in the UM stash section (e.g. r
 in the stratosphere or outside our vertical area of interest) to reduce the size of the output
 (if required). When interpolating in altitude, the interpolation code will require the model
 orography field to convert model levels to altitude. The name and path of the orography file
-can be defined using the -e input variable. If this is not specified, the code will look for a file
-named orography.pp in the same directory as the observational input files.
+can be defined using the `-e` input variable. If this is not specified, the code will look for a file
+named `orography.pp` in the same directory as the observational input files.
 
 All model variables should be output as hourly (or higher frequency) values and written to
 daily files on a single output stream. This is because all model data required for
 interpolation is read from a single file. Therefore, users need to set up the right ‘domain’,
 ‘time’ and ‘usage’ profiles, output stream and file re-initialisation for the model output
 containing the fields to be interpolated. For an example of setting up the right model output
-go to ‘STASH Request’ section for u-cs474 and filter for ‘UPO’ in usage name or ‘FLIGHT’
+go to ‘STASH Request’ section for `u-cs474` and filter for ‘UPO’ in usage name or ‘FLIGHT’
 package.
