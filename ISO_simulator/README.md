@@ -4,21 +4,21 @@
 ## Setup Instructions
 
 
-### How to output UM data on predetermined flight tracks using `flight_simulator`
+### How to output UM data on predetermined flight tracks using `ISO_simulator`
 
 These instructions explain how to produce UM model output on a set of predetermined
 flight tracks to make it easier and quicker to compare model data to observations. This is
 done by interpolating gridded, hourly (or higher frequency) model data in space and time
 onto flight track coordinates.
 
-`flight_simulator` can be run on existing model output (postprocessing) or it can be
+`ISO_simulator` can be run on existing model output (postprocessing) or it can be
 embedded into a UM rose suite. The step by step instructions work for both cases. To run
-`flight_simulator` in postprocessing mode you can omit point 3 below:
+`ISO_simulator` in postprocessing mode you can omit point 3 below:
 
 1. Ensure the correct python environment is available. Instructions are different on
    Monsoon, Archer2 and JASMIN (see 1A and 1B).
 2. Produce flight track input files in the appropriate netcdf format
-3. Modify a UM suite to include a new app which calls `flight_simulator`
+3. Modify a UM suite to include a new app which calls `ISO_simulator`
 4. Select appropriate input options for the interpolation code
 5. Ensure the UM has the appropriate model output in the required format to be read
    by the interpolation code
@@ -130,19 +130,18 @@ a) `app/fcm_make_pp/rose-app.conf` (this change is necessary to archive the
    resulting NetCDF files)
 
 b) a new directory is added, `app/flight_track_sim`. This contains
-   `rose_app.conf` and `bin/flight_simulator.py`. Please use the latest versions
-   of the above, which is provided with this document. `rose_app.conf` contains
-   input variables and a command line argument to invoke `flight_simulator.py`.
+   `rose_app.conf` and `bin/ISO_simulator.py`. `rose_app.conf` contains
+   input variables and a command line argument to invoke `ISO_simulator.py`.
 
 c) `site/monsoon.rc` or `site/archer2.rc` (these changes are to define resources
-   for the `flight_track` code)
+   for the python code)
 
 d) `suite.rc` (these changes define the new UM task and point to the python libraries)
 
 
 #### 4. Select appropriate input options for the interpolation code
 
-A list of input variables required to run `flight_simulator.py`, their description and
+A list of input variables required to run `ISO_simulator.py`, their description and
 usage is shown in the table below. A subparser argument, ‘jobtype’, is used to indicate
 whether the code is running within the UM-UKCA run-time workflow (if ‘batch’ is selected)
 or as a standalone postprocessing tool, e.g. on existing model data, (if ‘postprocessing’ is
