@@ -15,8 +15,9 @@ onto flight track coordinates.
 embedded into a UM rose suite. The step by step instructions work for both cases. To run
 `ISO_simulator` in postprocessing mode you can omit point 3 below:
 
-1. Ensure the correct python environment is available. Instructions are different on
-   Monsoon, Archer2 and JASMIN (see 1A and 1B).
+1. Ensure the correct python environment is available. Instructions for
+   Monsoon are different to instructions for other platforms, including Archer2 and JASMIN
+   (see 1A and 1B respectively).
 2. Produce flight track input files in the appropriate netcdf format
 3. Modify a UM suite to include a new app which calls `ISO_simulator`
 4. Select appropriate input options for the interpolation code
@@ -27,54 +28,34 @@ embedded into a UM rose suite. The step by step instructions work for both cases
 #### 1. A) Installing a Python environment (on JASMIN, Archer2, local clusters)
 
 The interpolation code requires general python packages plus CIS, Iris and cf-python. To
-install these, follow the instructions below. This assumes you don’t have python already
-installed locally. Since python packages are updated all the time, any new python
-installation might have some issues with dependencies and issues will need to be ironed
-out. To install a new python environment follow the instructions below:
+install a suitable conda environment, follow the instructions below. 
 
-a) From the home directory, download `miniconda` by typing these lines in your terminal:
+a) From the home directory, install a `vision` conda environment by typing these lines in your terminal:
 
    ```bash
-   wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
+   conda create --name vision --file environment.txt
    ```
-
-b) Install `miniconda`:
-
-   ```bash
-   bash Miniconda3-latest-Linux-x86_64.sh -b
-   PATH=~/miniconda3/bin:$PATH conda install mamba -n base -c conda-forge -y
-   PATH=~/miniconda3/bin:$PATH mamba install cf-python cf-plot udunits2 mpich esmpy
-   iris mo_pack ipython -c ncas -c conda-forge -y
-   PATH=~/miniconda3/bin:$PATH conda install -c conda-forge cis
-   ```
-
-c) Often, one of the libraries is not compiled properly, fix this by following instructions
-   below:
-
-   ```bash
-   cd ~/miniconda3/lib/pythonX.X/site-packages/cf/umread_lib/c-lib
-   make
-   ```
-
-d) Modify your `.bash_profile` (or `.bashrc` etc.) by adding the two lines below to define the
+   The environment.txt file is provided here and it ensures that package dependencies are not disrupted with latest code releases
+   
+b) Modify your `.bash_profile` (or `.bashrc` etc.) by adding the two lines below to define the
    python path:
 
    ```bash
-   export PATH=~/miniconda3/bin:$PATH
-   export UDUNITS2_XML_PATH=~/miniconda3/share/udunits/udunits2.xml
+   export PATH=~/vision/bin:$PATH
+   export UDUNITS2_XML_PATH=~/vision/share/udunits/udunits2.xml
    ```
 
-e) Load the conda environment:
+c) If you are running in postprocessing you will need to activate the conda environment:
 
    ```bash
-   conda activate ~/miniconda3
+   conda activate ~/vision
    ```
 
 
 #### 1. B) Python environment (on Monsoon)
 There are currently some issues with installing python directly on Monsoon, this is because
 Monsoon has some old C libraries and more recent versions of python will not work (this
-should be resolved once moving to Monsoon2).
+should be resolved when moving to the next Monsoon).
 
 Therefore, in order to access the right python environment, you will have to make a copy of
 the current python installation (see instruction below).
@@ -109,10 +90,7 @@ Therefore files must comply to the following requirements:
 The following variables defining time and location are required: ‘time’, ‘latitude’, ‘longitude’
 ‘air_pressure’ and/or ‘altitude’ and the variable names must be as specified (standard cf
 compliant names).
-One additional/optional string variable can be included (name must be
-‘region’, ‘tag’ or ‘campaign’); this is used in order to identify data from specific regions,
-datasets or campaigns, so that when analysing model data on flight track, we can efficiently
-select specific data using this string variable as a mask. The flight input file can also contain
+The flight input file can also contain
 additional fields for convenience (any observed variable of interest, e.g. ozone, CO, aerosol,
 etc.): these extra fields are ignored by the interpolation code, but it might be useful to have
 them in the files for comparison with model data after interpolation.
@@ -165,11 +143,10 @@ the ‘flight_track_sim’ menu in the rosie job gui.
 | `-m --method Interpolation`   | `Interpolation` is “lin”/“nn” for linear or nearest neighbour interpolation (optional; default `lin`)                                                                                                                                                                                                                               |
 | `-v --vertical_coord`         | Choose coordinate for vertical interpolation: 'air_pressure' or 'altitude'; (optional; default=`altitude`)                                                                                                                                                                                                                          |
 | `-e --extra_file`             | Filename (including full path) of model orography file'; (optional, only required if `vertical_coord=altitude`; default=`Directory_ft/orography.pp`)                                                                                                                                                                                |
-| `-c --climatology True/False` | `True` produces a multi-year climatology for each flight (optional; default `False`)                                                                                                                                                                                                                                                |
 | `-o --outdir Directory_out`   | `Directory_out` is the location to write output NetCDF files (optional). If batch is selected, output files are always written to `Directory_in` and additionally copied to `Directory_out` if present. If postprocessing is selected, output files are written to the current directory (`./`) or to `Directory_out` if present)   |
-| `Batch`                       | Indicates the python script is running within the UM run-time workflow                                                                                                                                                                                                                                                              |
+| `batch`                       | Indicates the python script is running within the UM run-time workflow                                                                                                                                                                                                                                                              |
 | `-a --archive_hourly`         | `True` to archive hourly files instead of deleting them (optional; default True)                                                                                                                                                                                                                                                    |
-| `Postprocessing`              | Indicates the python script is running outside the UM run-time workflow                                                                                                                                                                                                                                                             |
+| `postprocessing`              | Indicates the python script is running outside the UM run-time workflow                                                                                                                                                                                                                                                             |
 | `-s --select_stash Code`      | `Code` is a list of space separated stashcodes (optional; default = process all)                                                                                                                                                                                                                                                    |
 
 
