@@ -167,7 +167,8 @@ the Heaviside function on pressure levels to account for model missing data wher
 pressure level near the surface falls below the orography for that gridbox. The Heaviside
 functions associated to the variables of interest (the UM has different Heaviside functions
 for different groups of variables) should be output in the same file and at the same
-time resolution as the variables we want to interpolate.
+time resolution as the variables we want to interpolate. For an example of setting up the right model output
+go to ‘STASH Request’ section for `u-cs474` and filter for ‘UPO’ in usage name.
 
 ##### For altitude interpolation
 
@@ -184,5 +185,4 @@ daily files on a single output stream. This is because all model data required f
 interpolation is read from a single file. Therefore, users need to set up the right ‘domain’,
 ‘time’ and ‘usage’ profiles, output stream and file re-initialisation for the model output
 containing the fields to be interpolated. For an example of setting up the right model output
-go to ‘STASH Request’ section for `u-cs474` and filter for ‘UPO’ in usage name or ‘FLIGHT’
-package.
+go to ‘STASH Request’ section for `u-cu445` and filter for ‘UPP’ in usage name.
