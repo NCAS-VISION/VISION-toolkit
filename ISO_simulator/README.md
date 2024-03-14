@@ -9,7 +9,7 @@
 These instructions explain how to produce UM model output on a set of predetermined
 flight tracks to make it easier and quicker to compare model data to observations. This is
 done by interpolating gridded, hourly (or higher frequency) model data in space and time
-onto flight track coordinates.
+onto observations coordinates.
 
 `ISO_simulator` can be run on existing model output (postprocessing) or it can be
 embedded into a UM rose suite. The step by step instructions work for both cases. To run
@@ -48,7 +48,7 @@ b) Modify your `.bash_profile` (or `.bashrc` etc.) by adding the two lines below
 c) If you are running in postprocessing you will need to activate the conda environment:
 
    ```bash
-   conda activate ~/vision
+   conda activate vision
    ```
 
 
