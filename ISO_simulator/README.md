@@ -33,19 +33,11 @@ install a suitable conda environment, follow the instructions below.
 a) From the home directory, install a `vision` conda environment by typing these lines in your terminal:
 
    ```bash
-   conda create --name vision --file environment.txt
+   conda create --name vision --file vision_environment.txt
    ```
-   The environment.txt file is provided here and it ensures that package dependencies are not disrupted with latest code releases
-   
-b) Modify your `.bash_profile` (or `.bashrc` etc.) by adding the two lines below to define the
-   python path:
+   The vision_environment.txt file is provided here and it ensures that package dependencies are not disrupted.
 
-   ```bash
-   export PATH=~/vision/bin:$PATH
-   export UDUNITS2_XML_PATH=~/vision/share/udunits/udunits2.xml
-   ```
-
-c) If you are running in postprocessing you will need to activate the conda environment:
+b) If you are running in postprocessing you will need to activate the conda environment:
 
    ```bash
    conda activate vision
