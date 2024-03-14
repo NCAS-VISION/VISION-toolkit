@@ -170,7 +170,7 @@ in the stratosphere or outside our vertical area of interest) to reduce the size
 (if required). When interpolating in altitude, the interpolation code will require the model
 orography field to convert model levels to altitude. The name and path of the orography file
 can be defined using the `-e` input variable. If this is not specified, the code will look for a file
-named `orography.pp` in the same directory as the observational input files.
+named `orography.pp` (if running in postprocessing) or ‘orography’ (if embedded within a UM suite) located in the same directory as the observational input files. The difference between the two files is that the former is in UM pp format and the latter is in UM fieldsfile (ff) format. It is necessary that the orography file is in the same format as the model files (UM pp when postprocessing after retrieving from MASS and UM ff when the code is embedded within a UM suite).
 
 All model variables should be output as hourly (or higher frequency) values and written to
 daily files on a single output stream. This is because all model data required for
