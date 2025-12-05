@@ -79,14 +79,36 @@ Therefore files must comply to the following requirements:
 * There should be no digits in the filename before the date (you can add digits after):
   for example `CVAO_O3_20070101.nc` (not OK); `CVAO_20070101_O3.nc` (OK)
 
-The following variables defining time and location are required: ‘time’, ‘latitude’, ‘longitude’
-‘air_pressure’ and/or ‘altitude’ and the variable names must be as specified (standard cf
+The following variables defining time and location are required: ‘time’, ‘latitude’, ‘longitude’, 'altitude', 
+‘air_pressure’ (the latter is optional) and these variable names must be as specified (standard cf
 compliant names).
-The flight input file can also contain
-additional fields for convenience (any observed variable of interest, e.g. ozone, CO, aerosol,
+The flight input file can also contain additional fields for convenience (any observed variable of interest, e.g. ozone, CO, aerosol,
 etc.): these extra fields are ignored by the interpolation code, but it might be useful to have
-them in the files for comparison with model data after interpolation.
+them in the files for comparison with model data after interpolation. Below is an example of the variables required in an input observation file (created by ncdump -h filename.nc)
 
+```variables:
+	double time(obs) ;
+		time:standard_name = "time" ;
+		time:units = "days since 1900-01-01 00:00:00" ;
+		time:long_name = "time of measurement" ;
+		time:calendar = "standard" ;
+	float altitude(obs) ;
+		altitude:standard_name = "altitude" ;
+		altitude:units = "m" ;
+		altitude:long_name = "Altitude from POS AV 510 GPS-aided Inertial Navigation unit" ;
+	float air_pressure(obs) ;
+		air_pressure:standard_name = "air_pressure" ;
+		air_pressure:units = "hPa" ;
+		air_pressure:long_name = "Static pressure from the aircraft RVSM (air data) system" ;
+	float latitude(obs) ;
+		latitude:standard_name = "latitude" ;
+		latitude:units = "degree_north" ;
+		latitude:long_name = "Latitude from POS AV 510 GPS-aided Inertial Navigation unit" ;
+	float longitude(obs) ;
+		longitude:standard_name = "longitude" ;
+		longitude:units = "degree_east" ;
+		longitude:long_name = "Longitude from POS AV 510 GPS-aided Inertial Navigation unit" ;
+```
 
 #### 3. Modify a UM suite to include the interpolation code
 
